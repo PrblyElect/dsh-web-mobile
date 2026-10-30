@@ -1,0 +1,13 @@
+{
+  "name": "dsh-web-mobile",
+  "version": "1.0.0",
+  "description": "Mobile viewport/zoom hardening for the DeepSeek Harness web GUI: viewport lock, safe-area insets, 16px inputs, touch-action, and a sidebar QoL guard",
+  "type": "module",
+  "main": "index.js",
+  "exports": "./index.js",
+  "license": "MIT",
+  "repository": "https://github.com/PrblyElect/dsh-web-mobile",
+  "peerDependencies": {
+    "@deepseek-ai/dsh-web": ">=0.1.0-rc.6 <0.3.0"
+  }
+}
