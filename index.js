@@ -61,13 +61,45 @@ const GUARD = `<script>
 })();
 </script>`;
 
+// The stock page is not assumed to have a viewport meta, and when it has one
+// its attribute order is not assumed either: a meta that puts name= second
+// is still a viewport meta. The hardened directive is therefore injected
+// when no stock meta was replaced, and the stock one is matched whatever
+// order its attributes are in.
+const META_RE = /<meta\b[^>]*>/gi;
+const VIEWPORT_NAME_RE = /\bname\s*=\s*["']viewport["']/i;
+const HEAD_RE = /<head(?:\s[^>]*)?>/i;
+const HTML_RE = /<html(?:\s[^>]*)?>/i;
+
+// Put markup at the top of the document head. Falls back to the <html>
+// opening tag, and to the very start of the document, so the markup is
+// never silently dropped because the page has an unexpected shape.
+function injectIntoHead(html, markup) {
+  if (HEAD_RE.test(html)) {
+    return html.replace(HEAD_RE, (open) => open + markup);
+  }
+  if (HTML_RE.test(html)) {
+    return html.replace(HTML_RE, (open) => open + markup);
+  }
+  return markup + html;
+}
+
 export function apply(ctx) {
   const dispose = ctx.webServer.tapIndex((html) => {
-    // Replace any stock viewport meta with our hardened one, so exactly one
-    // viewport directive exists and the zoom lock is authoritative.
-    const hardened = html.replace(/<meta name="viewport"[^>]*\/?>/gi, VIEWPORT);
+    // Replace the stock viewport meta with the hardened one, so exactly one
+    // viewport directive exists and the zoom lock is authoritative. Any
+    // further stock viewport metas are removed rather than duplicated.
+    let replaced = 0;
+    let hardened = html.replace(META_RE, (tag) => {
+      if (!VIEWPORT_NAME_RE.test(tag)) { return tag; }
+      replaced += 1;
+      return replaced === 1 ? VIEWPORT : "";
+    });
+    // No stock viewport meta at all: inject the hardened one. A plugin that
+    // only hardens what it happens to find leaves the page unprotected.
+    const headExtras = replaced === 0 ? VIEWPORT : "";
     // Inject the mobile style block and the sidebar QoL guard after the head.
-    return hardened.replace(/<head(?:\s[^>]*)?>/i, (open) => open + STYLE + GUARD);
+    return injectIntoHead(hardened, headExtras + STYLE + GUARD);
   });
   ctx.effect(() => dispose);
 }

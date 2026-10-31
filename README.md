@@ -11,10 +11,14 @@ injects the missing head markup through DSH's own index-render seam
 - upstream Harness/frontend changes still land;
 - unregistering the plugin restores the stock page.
 
-The repository is `dsh-web-mobile`; the npm package is published as
+The repository is `dsh-web-mobile`; the package's own name is
 **`dsh-web-mobile-hardening`**, because the shorter name is already taken by
-an unrelated package and installing that name resolves to someone else's
-code.
+an unrelated package on the npm registry and installing that name resolves
+to someone else's code.
+
+**This package is not published to the npm registry.** Install it from a
+local checkout or from a tarball (`npm pack`) — both routes are covered
+below. Nothing here needs the registry to resolve this plugin by name.
 
 ## What it injects (mobile only)
 
@@ -66,6 +70,12 @@ the patch list):
       name: 'dsh-web-mobile-hardening'
 ```
 
+The `name:` here is the package specifier the loader resolves, and it
+resolves against the package you just installed locally — the `file:`
+dependency gives `node_modules` a package called `dsh-web-mobile-hardening`
+under that name. It is not a registry lookup, and it does not work without
+the dependency step above.
+
 Then restart `dsh web`. To remove it, delete the insert entry (and the
 dependency) and restart — the stock page comes back.
 
@@ -81,7 +91,10 @@ With **npm**:
 |---|---|---|
 | `file:` directory path | no | no |
 | `file:` tarball from `npm pack` | yes — an out-of-range peer fails with `ERESOLVE` | by the lockfile |
-| npm registry, by name | yes — an out-of-range peer fails with `ERESOLVE` | by the lockfile |
+
+There is no "npm registry, by name" row: this package is not published to
+the registry, so that route does not exist for it. Every install path below
+resolves the plugin locally.
 
 A directory dependency is linked rather than resolved, so npm never checks
 the declared peer range against it: a wrong range stays invisible on the
