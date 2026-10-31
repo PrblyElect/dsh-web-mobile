@@ -1,0 +1,16 @@
+# dsh-web-mobile-hardening bundle patch: one host-only plugin row.
+#
+# package.json declares `dsh.bundle.patch: ./cordis.patch.yml`, which is what
+# makes this package a profile layer: the plugin manager adds it to the
+# profile's `dsh.profile.bundles` list on install and applies this patch list
+# as that layer. A package without the declaration installs as a plain
+# dependency and the row has to be written into the profile's own
+# cordis.patch.yml by hand.
+#
+# The row inserts the host plugin declared by index.js. In a patch row,
+# `name` is the PACKAGE SPECIFIER the loader resolves, and `id` is this
+# row's own unique identifier within the bundle — not the plugin's
+# exported name.
+- insert:
+    - id: web-mobile
+      name: 'dsh-web-mobile-hardening'
