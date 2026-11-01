@@ -11,9 +11,9 @@
 # `name` is the PACKAGE SPECIFIER the loader resolves, and `id` is this
 # row's own unique identifier within the bundle — not the plugin's
 # exported name. The specifier resolves against the package installed in
-# the profile (a `file:` dependency from a local checkout or tarball):
-# this package is not published to the npm registry, so the registry is
-# never consulted for this name.
+# the profile (a `file:` dependency from a local checkout or tarball, or a
+# git-installed package): this package is not published to the npm registry,
+# so the registry is never consulted for this name.
 - insert:
     - id: web-mobile
       name: 'dsh-web-mobile-hardening'

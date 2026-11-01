@@ -1,7 +1,7 @@
 {
   "name": "dsh-web-mobile-hardening",
   "version": "1.0.0",
-  "description": "Mobile viewport/zoom hardening for the DeepSeek Harness web GUI: viewport lock, safe-area insets, 16px inputs, touch-action, and a sidebar QoL guard",
+  "description": "Mobile viewport/zoom hardening for the DeepSeek Harness web GUI: viewport zoom lock, 16px form fields on coarse pointers, touch-action, and tap-highlight reset",
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -25,9 +25,13 @@
     "deepseek"
   ],
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=24.9.0",
+    "dsh": ">=0.2.0-rc.1 <0.3.0-0 || >=0.2.1-a <0.3.0-0 || >=0.2.2-a <0.3.0-0"
   },
   "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\""
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -39,6 +43,7 @@
   "files": [
     "index.js",
     "cordis.patch.yml",
+    "test",
     "README.md",
     "LICENSE"
   ]
